@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'httparty'
+require 'pry'
 
 get '/locations' do
   safe_param_keys = [:n, :s, :e, :w]
@@ -10,12 +11,21 @@ get '/locations' do
   url = "http://api.geonames.org/citiesJSON?"\
   "north=#{safe_params[:n]}&south=#{safe_params[:s]}&"\
   "east=#{safe_params[:e]}&west=#{safe_params[:w]}&lang=de&username=halozero"
-  p "url is #{url}"
+
   response = HTTParty.get(url)
   response_json = JSON.parse(response.body)
-  cities = response_json["geonames"]
-  cities = cities.collect {|x| {name: x["name"], lat: x["lat"], lng: x["lng"]}}
-  cities
+
+  success = true
+  cities = []
+
+  if response_json["geonames"].nil?
+    success = false
+  else
+    cities = response_json["geonames"].collect do |x|
+      { name: x["name"], lat: x["lat"], lng: x["lng"] }
+    end
+  end
+  { success: success, cities: cities }.to_json
 end
 
 get '/' do

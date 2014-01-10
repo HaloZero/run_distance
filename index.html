@@ -18,10 +18,10 @@
 
 
 function initialize() {
-  var location = new google.maps.LatLng(37.760375, -122.426877);
+  var center = new google.maps.LatLng(37.760375, -122.426877);
 
   var mapOptions = {
-    center: location,
+    center: center,
     zoom: 17,
     mapTypeId: google.maps.MapTypeId.ROADMAP,
 
@@ -34,16 +34,17 @@ function initialize() {
     map:map,
     draggable:false,
     animation: google.maps.Animation.DROP,
-    position: location
+    position: center
   });
 
   google.maps.event.addListener(marker, 'click', toggleBounce);
   }, 200);
 
+  var distanceRan = 804672;
  //converts to meters
   var circleOptions = {
-    radius: 804672,
-    center: location,
+    radius: distanceRan,
+    center: center,
     map: map,
     strokeColor: '#FF0000',
     strokeOpacity: 0.8,
@@ -69,14 +70,32 @@ function initialize() {
   +"&s="+south
   +"&e="+east
   +"&w="+west
-  console.log(URL);
 
   $.ajax({
     url: URL,
-    contentType: "JSON",
+    contentType: "application/json",
+    dataType: 'json',
     type: "GET"
   }).done(function(response) {
-    console.log(response);
+    console.log('response is ', response);
+    if (response.success) {
+      var cities = response.cities;
+      $.each(cities, function(_, city) {
+          var location = new google.maps.LatLng(city.lat, city.lng);
+          var distance = google.maps.geometry.spherical.computeDistanceBetween(location, center);
+          if (distance <= distanceRan) {
+            var cityPin = new google.maps.Marker({
+              map:map,
+              draggable:false,
+              animation: google.maps.Animation.DROP,
+              position: location,
+              title: city.name
+            });
+            console.log('city is ', city);
+          }
+
+      });
+    }
   });
 }
 
