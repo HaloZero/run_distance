@@ -1,7 +1,8 @@
 <head>
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpxzAN7i8ElCOC0w3SJWmZMjrXH5WD7Dg&sensor=true">
-  </script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpxzAN7i8ElCOC0w3SJWmZMjrXH5WD7Dg&sensor=true"></script>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </head>
 
 <style>
@@ -9,9 +10,36 @@
     height: 100%;
     width: 100%;
   }
+
+  #input-box {
+    position: fixed;
+    left: 45%;
+    top: 45%;
+    background: white;
+    padding: 20px;
+    width: 200px;
+  }
+
+  #input-box .input-group {
+    margin: 10px 0;
+  }
 </style>
 <body>
   <div id="map-canvas"></div>
+  <div id="input-box">
+    <form>
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Location">
+      </div>
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Distance">
+        <span class="input-group-addon">miles</span>
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+  </div>
+
+
 </body>
 
 <script type="text/javascript">
@@ -65,7 +93,7 @@ function initialize() {
   var south = SW.lat();
   var west = SW.lng();
 
-  var URL = "http://localhost:9393/locations?"
+  var URL = "http://localhost:4567/locations?"
   +"n="+north
   +"&s="+south
   +"&e="+east
