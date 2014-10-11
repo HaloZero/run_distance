@@ -2,6 +2,7 @@
   <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
   <script type="text/javascript" src="js/google-maps.js"></script>
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/run.js"></script>
   <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 
@@ -11,161 +12,55 @@
     width: 100%;
   }
 
-  #input-box .input-group {
+  #input-box {
     margin: 10px 0;
     background: white;
     position: fixed;
-    top: 20%;
-    left: 50%;
-    margin-top: -20px;
-    margin-left: -100px;
+    bottom: 5%;
+    left: 5%;
     text-align: center;
-    width: 200px;
-    height: 50px;
+    width: 20%;
     border: 1px solid #000;
+  }
+  .input-group {
+    margin: 10px 0;
+    width: 100%;
+  }
+
+  .box-distance .input-group .form-control {
+    width: 50%;
+    text-align: left;
+    display: inline-block;
   }
 </style>
 
 <body>
   <div id="map-canvas"></div>
-  <div id="input-box">
+  <div id="input-box" class='box-distance'>
     <form>
       <div class="input-group">
-        <input type="text" class="form-control" placeholder="Location">
+        <div class='input-group-header'>Where are you?</div>
+        <input type="text" class="form-control location" placeholder="Location">
+        <input type="hidden" class="location-coordinates">
+        <button type="button" class="btn btn-default current-location">Current Location</button>
       </div>
       <div class="input-group">
+        <div class='input-group-header'>How far have you run?</div>
         <input type="text" class="form-control distance" placeholder="Distance">
-        <span class="input-group">miles</span>
+        <select>
+          <option value="miles">miles</option>
+          <option value="kilometers">kilometers</option>
+        </select>
       </div>
-      <button type="submit" class="btn btn-default">Submit</button>
+      <div class='form-group'>
+        <button type="submit" class="btn btn-default">Calculate</button>
+      </div>
     </form>
   </div>
 </body>
 
 <script type="text/javascript">
 
-var circles = [];
-
-function initialize() {
-  if (navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(positionCallback);
-  } else {
-    alert("Need current location");
-  }
-}
-
-function positionCallback(position) {
-  var coords = position.coords;
-  var coordinate = new google.maps.LatLng(coords.latitude, coords.longitude);
-  setupMap(coordinate);
-}
-
-function setupMap(center) {
-  var mapOptions = {
-    center: center,
-    zoom: 17,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-  };
-
-  var map = new google.maps.Map(document.getElementById("map-canvas"),
-      mapOptions);
-
-  $("form").bind('submit', function(e) {
-    var distance = $('form .distance').val();
-    $.each(circles, function(i, circle) {
-      circle.setMap(null);
-    });
-    circles = [];
-    distanceRan(distance, center, map);
-    return false;
-  });
-}
-
-
-function distanceRan(distance, center, map) {
-  var distanceRan = distance * 1000;
- //converts to meters
-  var circleOptions = {
-    radius: distanceRan,
-    center: center,
-    map: map,
-    strokeColor: '#FF0000',
-    strokeOpacity: 0.8,
-    strokeWeight: 2
-  };
-
-  var circle = new google.maps.Circle(circleOptions);
-  // TODO: this state is ugly!
-  circles.push(circle);
-  map.fitBounds(circle.getBounds());
-
-  var bounds = circle.getBounds();
-  var NE = bounds.getNorthEast();
-  var SW = bounds.getSouthWest();
-  var north = NE.lat();
-  var east = NE.lng();
-  var south = SW.lat();
-  var west = SW.lng();
-
-  var URL = "http://localhost:9393/locations?"
-  +"n="+north
-  +"&s="+south
-  +"&e="+east
-  +"&w="+west;
-
-  console.log("setting off cityRequest");
-  var cityRequest = $.ajax({
-    url: URL,
-    contentType: "application/json",
-    dataType: 'json',
-    type: "GET",
-    tryCount: 1,
-    retryLimit: 5
-  }).success(function(response) {
-    if (response.success) {
-      var cities = response.cities;
-      console.log("found ", cities.length, " cities");
-      $.each(cities, function(_, city) {
-          var location = new google.maps.LatLng(city.lat, city.lng);
-          var distance = google.maps.geometry.spherical.computeDistanceBetween(location, center);
-          if (distance <= distanceRan) {
-            var cityPin = new google.maps.Marker({
-              map:map,
-              draggable:false,
-              animation: google.maps.Animation.DROP,
-              position: location,
-              title: city.name
-            });
-            google.maps.event.addListener(
-              cityPin,
-              'click',
-              function(cityPin) {
-                return function () { toggleName(cityPin) }
-              }(cityPin)
-            );
-          }
-      });
-    } else {
-      if (this.tryCount <= this.retryLimit) {
-        this.tryCount++;
-        $.ajax(cityRequest);
-      } else {
-        alert("Could not retrieve nearby locations. Try loading later");
-      }
-      console.log("response fail");
-    }
-  }).fail(function() {
-    console.log(cityRequest);
-  }).done(function() {
-    console.log("done");
-  });
-}
-
-function toggleName(marker) {
-  alert(marker.title);
-}
-
-google.maps.event.addDomListener(window, 'load', initialize);
 
 
 </script>
