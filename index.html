@@ -1,9 +1,12 @@
 <head>
   <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
-  <script type="text/javascript" src="js/google-maps.js"></script>
+  <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3dKL1SuU-c15kF_2bV3ZTIzpDnTus-sk">
+    </script>
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
   <script type="text/javascript" src="js/run.js"></script>
   <link rel="stylesheet" href="css/bootstrap.min.css">
+  <title>How far could you go?</title>
 </head>
 
 <style>
@@ -39,6 +42,9 @@
   <div id="input-box" class='box-distance'>
     <form>
       <div class="input-group">
+        If you could continuously run the total distance you ran last year? How far would you be able to run?
+      </div>
+      <div class="input-group">
         <div class='input-group-header'>Where are you?</div>
         <input type="text" class="form-control location" placeholder="Location">
         <input type="hidden" class="location-coordinates">
@@ -47,7 +53,7 @@
       <div class="input-group">
         <div class='input-group-header'>How far have you run?</div>
         <input type="text" class="form-control distance" placeholder="Distance">
-        <select>
+        <select class='distance-type'>
           <option value="miles">miles</option>
           <option value="kilometers">kilometers</option>
         </select>
