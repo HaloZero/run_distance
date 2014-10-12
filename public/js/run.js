@@ -14,8 +14,7 @@ function setupMap() {
 }
 
 
-function drawCircles(distance, map) {
-  var center = map.getCenter();
+function drawCircles(distance, center, map) {
 
   //converts to meters
   var distanceRan = distance * 1000;
@@ -107,6 +106,7 @@ $(function() {
       $('.location').val(coordinates.latitude.toFixed(4)+','+coordinates.longitude.toFixed(4));
       var newCenter =  new google.maps.LatLng(coordinates.latitude, coordinates.longitude);
       map.setCenter(newCenter);
+      $('.location-coordinates').val(newCenter);
     });
   });
 
@@ -121,15 +121,20 @@ $(function() {
       if (status == google.maps.GeocoderStatus.OK) {
         var result = results[0];
         map.setCenter(result.geometry.location);
+        $('.location-coordinates').val(result.geometry.location);
       } else {
         alert("Failed to find that address");
       }
     });
-    }, 300);
+    }, 100);
 
   });
   $("form").bind('submit', function(e) {
     var distance = $('form .distance').val();
+    if (!!!distance) {
+      alert("Please fill in a distance");
+      return false;
+    }
     var distanceType = $('.distance-type').val();
     if (distanceType == 'miles') {
       distance = distance * 1.60934;
@@ -143,7 +148,10 @@ $(function() {
     });
 
     circles = [];
-    drawCircles(distance, map);
+    var center = $(".location-coordinates").val().replace('(', '').replace(')', '');
+
+    center = new google.maps.LatLng(center.split(',')[0], center.split(',')[1]);
+    drawCircles(distance, center, map);
     return false;
   });
 });
