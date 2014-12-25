@@ -58,7 +58,7 @@ function drawCircles(distance, center, map) {
       $.each(cities, function(_, city) {
           var location = new google.maps.LatLng(city.lat, city.lng);
           var distance = google.maps.geometry.spherical.computeDistanceBetween(location, center);
-          // TODO: if pin is closer to the center then draw above or below
+
           if (distance <= distanceRan) {
             var cityPin = new MarkerWithLabel({
               map:map,
@@ -68,14 +68,14 @@ function drawCircles(distance, center, map) {
               title: city.name,
               labelContent: city.name,
               labelClass: 'city-name',
-              labelAnchor: new google.maps.Point(22, 60)
+              labelAnchor: new google.maps.Point(20, 63)
             });
             pins.push(cityPin);
             google.maps.event.addListener(
               cityPin,
               'click',
               function(cityPin) {
-                return function () { toggleName(cityPin) }
+                return function () { toggleName(cityPin); };
               }(cityPin)
             );
           }
