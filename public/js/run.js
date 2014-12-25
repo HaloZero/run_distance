@@ -15,7 +15,6 @@ function setupMap() {
 
 
 function drawCircles(distance, center, map) {
-
   //converts to meters
   var distanceRan = distance * 1000;
 
@@ -59,13 +58,17 @@ function drawCircles(distance, center, map) {
       $.each(cities, function(_, city) {
           var location = new google.maps.LatLng(city.lat, city.lng);
           var distance = google.maps.geometry.spherical.computeDistanceBetween(location, center);
+          // TODO: if pin is closer to the center then draw above or below
           if (distance <= distanceRan) {
-            var cityPin = new google.maps.Marker({
+            var cityPin = new MarkerWithLabel({
               map:map,
               draggable:false,
               animation: google.maps.Animation.DROP,
               position: location,
-              title: city.name
+              title: city.name,
+              labelContent: city.name,
+              labelClass: 'city-name',
+              labelAnchor: new google.maps.Point(22, 60)
             });
             pins.push(cityPin);
             google.maps.event.addListener(
@@ -106,6 +109,7 @@ $(function() {
       $('.location').val(coordinates.latitude.toFixed(4)+','+coordinates.longitude.toFixed(4));
       var newCenter =  new google.maps.LatLng(coordinates.latitude, coordinates.longitude);
       map.setCenter(newCenter);
+      map.setZoom(12);
       $('.location-coordinates').val(newCenter);
     });
   });
@@ -121,20 +125,23 @@ $(function() {
       if (status == google.maps.GeocoderStatus.OK) {
         var result = results[0];
         map.setCenter(result.geometry.location);
+        map.setZoom(12);
         $('.location-coordinates').val(result.geometry.location);
       } else {
         alert("Failed to find that address");
       }
     });
     }, 100);
-
   });
+
   $("form").bind('submit', function(e) {
     var distance = $('form .distance').val();
     if (!!!distance) {
       alert("Please fill in a distance");
       return false;
     }
+
+    $("#input-box").hide();
     var distanceType = $('.distance-type').val();
     if (distanceType == 'miles') {
       distance = distance * 1.60934;
