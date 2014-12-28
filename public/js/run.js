@@ -2,6 +2,14 @@ var circles = [];
 var pins = [];
 var map;
 
+var GACategoryName = 'run-event';
+var DEBUG = false;
+
+function trackEvent(action, properties) {
+  if (ga && !DEBUG) {
+    ga('send', 'event', GACategoryName, action, properties);
+  }
+}
 // setup the map and just put it's default location someplace.
 function setupMap() {
   var mapOptions = {
@@ -43,7 +51,10 @@ function drawCircles(distance, center, map) {
 
   var URL = "/locations?"+"n="+north+"&s="+south+"&e="+east+"&w="+west;
 
-  console.log("setting off cityRequest");
+  if (DEBUG) {
+    console.log("setting off cityRequest");
+  }
+
   var cityRequest = $.ajax({
     url: URL,
     contentType: "application/json",
@@ -54,7 +65,10 @@ function drawCircles(distance, center, map) {
   }).success(function(response) {
     if (response.success) {
       var cities = response.cities;
-      console.log("found ", cities.length, " cities");
+      if (DEBUG) {
+        console.log("found ", cities.length, " cities");
+      }
+
       $.each(cities, function(_, city) {
           var location = new google.maps.LatLng(city.lat, city.lng);
           var distance = google.maps.geometry.spherical.computeDistanceBetween(location, center);
@@ -87,12 +101,11 @@ function drawCircles(distance, center, map) {
       } else {
         alert("Could not retrieve nearby locations. Try loading later");
       }
-      console.log("response fail");
     }
   }).fail(function() {
-    console.log(cityRequest);
-  }).done(function() {
-    console.log("done");
+    if (DEBUG) {
+      console.log(cityRequest);
+    }
   });
 }
 
@@ -104,6 +117,7 @@ google.maps.event.addDomListener(window, 'load', setupMap);
 
 $(function() {
   $('.btn.current-location').click(function() {
+    trackEvent('get-current-location');
     navigator.geolocation.getCurrentPosition(function(position) {
       var coordinates = position.coords;
       $('.location').val(coordinates.latitude.toFixed(4)+','+coordinates.longitude.toFixed(4));
@@ -150,6 +164,7 @@ $(function() {
     $.each(circles, function(i, circle) {
       circle.setMap(null);
     });
+
     $.each(pins, function(i, pin) {
       pin.setMap(null);
     });
@@ -157,6 +172,11 @@ $(function() {
     circles = [];
     var center = $(".location-coordinates").val().replace('(', '').replace(')', '');
 
+    trackEvent('calculate-distance',
+      {
+        'distance': distance,
+        'center': center
+      });
     center = new google.maps.LatLng(center.split(',')[0], center.split(',')[1]);
     drawCircles(distance, center, map);
     return false;
