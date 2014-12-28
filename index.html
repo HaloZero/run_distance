@@ -5,71 +5,13 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3dKL1SuU-c15kF_2bV3ZTIzpDnTus-sk">
     </script>
   <script type="text/javascript" src='js/markerwithlabel_packed.js'></script>
+
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
   <script type="text/javascript" src="js/run.js"></script>
   <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/main.css">
   <title>How far could you go?</title>
 </head>
-
-<style>
-  #map-canvas {
-    height: 100%;
-    width: 100%;
-  }
-
-  #input-box {
-    margin: 10px 0;
-    background: white;
-    position: fixed;
-    bottom: 5%;
-    left: 5%;
-    text-align: center;
-    width: 450px;
-    border: 1px solid #000;
-  }
-
-  .city-name {
-    border: 1px solid white;
-    padding: 2px;
-    color: white;
-
-  }
-
-  /* Desktops and laptops */
-  @media only screen and (min-width : 1224px) {
-  /* Styles */
-    .box-distance .input-group .form-control {
-      width: 50%;
-      text-align: left;
-      display: inline-block;
-      margin-left: 5px;
-    }
-  }
-
-  /* Smartphones (portrait) */
-
-  /*iPhone 6 and iPhone 6+ portrait and landscape*/
-  @media only screen and (max-device-width: 640px), only screen and (max-device-width: 667px), only screen and (max-width: 480px){
-    #input-box {
-      width: 200px;
-    }
-
-    .box-distance .input-group .form-control {
-      display: block;
-      width: 90%;
-      text-align: center;
-      margin-left: 5px;
-      margin-bottom: 10px;
-    }
-  }
-
-  .input-group {
-    margin: 10px 0;
-    width: 100%;
-  }
-
-
-</style>
 
 <body>
   <div id="map-canvas"></div>
@@ -101,8 +43,12 @@
   </div>
 </body>
 
-<script type="text/javascript">
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-
-
+  ga('create', 'UA-58048570-1', 'auto');
+  ga('send', 'pageview');
 </script>

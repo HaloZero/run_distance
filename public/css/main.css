@@ -1,0 +1,55 @@
+#map-canvas {
+  height: 100%;
+  width: 100%;
+}
+
+#input-box {
+  margin: 10px 0;
+  background: white;
+  position: fixed;
+  bottom: 5%;
+  left: 5%;
+  text-align: center;
+  width: 450px;
+  border: 1px solid #000;
+}
+
+.city-name {
+  border: 1px solid white;
+  padding: 2px;
+  color: white;
+
+}
+
+/* Desktops and laptops */
+@media only screen and (min-width : 1224px) {
+/* Styles */
+  .box-distance .input-group .form-control {
+    width: 50%;
+    text-align: left;
+    display: inline-block;
+    margin-left: 5px;
+  }
+}
+
+/* Smartphones (portrait) */
+
+/*iPhone 6 and iPhone 6+ portrait and landscape*/
+@media only screen and (max-device-width: 640px), only screen and (max-device-width: 667px), only screen and (max-width: 480px){
+  #input-box {
+    width: 200px;
+  }
+
+  .box-distance .input-group .form-control {
+    display: block;
+    width: 90%;
+    text-align: center;
+    margin-left: 5px;
+    margin-bottom: 10px;
+  }
+}
+
+.input-group {
+  margin: 10px 0;
+  width: 100%;
+}
